@@ -8,6 +8,8 @@ public partial class SignalManager : Node
     [Signal] public delegate void OnExitFoundEventHandler();
     [Signal] public delegate void OnGameOverEventHandler();
 
+    [Signal] public delegate void OnDebugLabelEventHandler(string s);
+
     public static SignalManager Instance;
 
     public override void _EnterTree()
@@ -34,4 +36,10 @@ public partial class SignalManager : Node
     {
         Instance.EmitSignal(SignalName.OnGameOver);
     }
+
+    public static void EmitOnDebugLabel(string s)
+    {
+        Instance.EmitSignal(SignalName.OnDebugLabel,s);
+    }
+
 }
