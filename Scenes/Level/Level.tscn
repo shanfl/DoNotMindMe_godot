@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://ctt2xms8fju1e" path="res://Scenes/NPC/Npc.tscn" id="8_t3e81"]
 [ext_resource type="PackedScene" uid="uid://dtx5mlggfj2li" path="res://Scenes/GameUi/GameUi.tscn" id="9_lvwdj"]
 [ext_resource type="PackedScene" uid="uid://brj02e1bvkvuo" path="res://Scenes/Player/Player.tscn" id="10_aei0q"]
+[ext_resource type="PackedScene" uid="uid://bl3aa5twetsum" path="res://Scenes/Bullet/Bullet.tscn" id="11_s0x6l"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_s0x6l"]
 texture = ExtResource("2_ksici")
@@ -169,3 +170,6 @@ polygon = PackedVector2Array(254, 191, 254, 381, 448, 382, 449, 187)
 
 [node name="Player" parent="." unique_id=78311594 instance=ExtResource("10_aei0q")]
 position = Vector2(147, 376)
+
+[node name="Bullet" parent="." unique_id=151029687 instance=ExtResource("11_s0x6l")]
+position = Vector2(721, 446)

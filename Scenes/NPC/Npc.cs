@@ -12,6 +12,14 @@ public partial class Npc : CharacterBody2D
 
 	[Export] private Node2D _playerScanner;
 	[Export] private RayCast2D _ray;
+
+	[Export]private Sprite2D _warning;
+	[Export]private AudioStreamPlayer2D _sound;
+	[Export]private AnimationPlayer _anim;
+	[Export]  private Timer _shootTimer;
+	[Export] private Marker2D _shootPos;
+
+	[Export] PackedScene _bulletScene;
  
 	private List<Vector2> _wayPoints = [];
 	private int _currentWp = 0;
@@ -28,6 +36,23 @@ public partial class Npc : CharacterBody2D
 		SetPhysicsProcess(false);
 		CreateWayPoints();
 		CallDeferred(MethodName.LateSetup);
+
+		_shootTimer.Timeout += OnShootTimeTimeout;
+	}
+
+
+	private void Shoot()
+	{
+		var nb = _bulletScene.Instantiate<Bullet>();
+		nb.GlobalPosition = _shootPos.GlobalPosition;
+		GetTree().Root.AddChild(nb);
+		SoundManager.PlayLaser(_sound);
+	}
+
+	private void OnShootTimeTimeout()
+	{
+		if(_state != EnemyState.Chasing) return;
+		Shoot();
 	}
 
 	private async void LateSetup()
@@ -62,6 +87,16 @@ public partial class Npc : CharacterBody2D
 		_playerScanner.LookAt(_playerRef.GlobalPosition);
 	}
 
+	private bool PlayerDetected()
+	{
+		var c = _ray.GetCollider();
+		return c != null  && (c is Player);
+	}
+
+	private bool CanSeePlayer()
+	{
+		return PlayerDetected() && PlayerInFov(); 
+	}
 
 	private void SetNextWaypoint()
 	{
@@ -87,6 +122,7 @@ public partial class Npc : CharacterBody2D
 			_navAgent.TargetPosition = GetGlobalMousePosition();
 		}
 		RaycastToPlayer();
+		UpdateState();
 		UpdateMovement();
 		UpdateDebugLabel();
 		UpdateNavigation();
@@ -99,8 +135,71 @@ public partial class Npc : CharacterBody2D
 			case EnemyState.Patrolling:
 				ProcessPatrolling();
 				break;
+			case EnemyState.Chasing:
+				ProcessChasing();
+				break;
+			case EnemyState.Searching:
+				ProcessSearching();
+				break;
+			default:
+				break;
 		}
     }
+
+    private void ProcessSearching()
+    {
+		if (_navAgent.IsNavigationFinished())
+		{
+			SetState(EnemyState.Patrolling);
+		}
+    }
+
+    private void ProcessChasing()
+    {
+		_navAgent.TargetPosition = _playerRef.GlobalPosition;
+    }
+
+    private void SetState(EnemyState newState)
+	{
+		if(_state == newState) return;
+
+		if(newState == EnemyState.Patrolling)
+		{
+			_warning.Hide();
+			_anim.Play("RESET");
+			SetNextWaypoint();
+		} 
+		else if(newState == EnemyState.Searching)
+		{
+			_warning.Show();	
+			_anim.Play("RESET");		
+		}		
+		else if(newState == EnemyState.Chasing)
+		{
+			_warning.Hide();		
+			SoundManager.PlayGasp(_sound);	
+			_anim.Play("flash");
+		}
+
+		_state = newState;
+	}
+
+	private void UpdateState()
+	{
+		var newState = _state;
+		var cansee = CanSeePlayer();
+
+		if (cansee)
+		{
+			newState = EnemyState.Chasing;
+		}
+		else if(!cansee && _state == EnemyState.Chasing)
+		{
+			newState = EnemyState.Searching;		
+		}
+
+		SetState(newState);
+	}
 
     private void ProcessPatrolling()
     {
@@ -116,7 +215,7 @@ public partial class Npc : CharacterBody2D
 		{
 			var npp = _navAgent.GetNextPathPosition();
 			LookAt(npp);
-			Velocity = Position.DirectionTo(npp) * 100.0f;
+			Velocity = Position.DirectionTo(npp) * 60.0f;
 			MoveAndSlide();
 		}
 	}
@@ -129,6 +228,7 @@ public partial class Npc : CharacterBody2D
 		s += $"IsNavigationFinished:{_navAgent.IsNavigationFinished()}\n";
 		s += $"Target:{_navAgent.TargetPosition}\n";
 		s += $"Fov:{GetFovAngle():F2}  PlayerInFov:{PlayerInFov()} \n";
+		s += $"CanSeePlayer: {CanSeePlayer()}, state:{_state}\n";
 		SignalManager.EmitOnDebugLabel(s);
 	}
 }
