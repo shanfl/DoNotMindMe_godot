@@ -18,25 +18,15 @@ texture_region_size = Vector2i(64, 64)
 4:0/0 = 0
 5:0/0 = 0
 
-[sub_resource type="NavigationPolygon" id="NavigationPolygon_0d5w8"]
-vertices = PackedVector2Array(32, 32, -32, 32, -32, -32, 32, -32)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)])
-agent_radius = 0.0
-
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gyjo4"]
 texture = ExtResource("2_lfvec")
 margins = Vector2i(2, 2)
 separation = Vector2i(4, 4)
 texture_region_size = Vector2i(64, 64)
 0:0/0 = 0
-0:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_0d5w8")
 1:0/0 = 0
-1:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_0d5w8")
 2:0/0 = 0
-2:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_0d5w8")
 3:0/0 = 0
-3:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_0d5w8")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pocpv"]
 texture = ExtResource("3_xynsr")
@@ -191,7 +181,6 @@ physics_layer_0/collision_mask = 6
 terrain_set_0/mode = 2
 terrain_set_0/terrain_0/name = "wallTerrain"
 terrain_set_0/terrain_0/color = Color(0.66306347, 0.09290146, 0.47469586, 1)
-navigation_layer_0/layers = 1
 sources/0 = SubResource("TileSetAtlasSource_s0x6l")
 sources/1 = SubResource("TileSetAtlasSource_gyjo4")
 sources/2 = SubResource("TileSetAtlasSource_pocpv")

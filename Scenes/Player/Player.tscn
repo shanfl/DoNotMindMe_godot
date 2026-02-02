@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://brj02e1bvkvuo"]
+
+[ext_resource type="Script" uid="uid://bl4sphto8d4f5" path="res://Scenes/Player/Player.cs" id="1_ft8w5"]
+[ext_resource type="Texture2D" uid="uid://c6nk5ksanib4b" path="res://assets/images/survivor1_gun.png" id="1_s0eop"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ft8w5"]
+size = Vector2(26, 39)
+
+[node name="Player" type="CharacterBody2D" unique_id=78311594]
+editor_description = "玩家"
+collision_layer = 4
+collision_mask = 3
+script = ExtResource("1_ft8w5")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=161027424]
+position = Vector2(9, 0)
+texture = ExtResource("1_s0eop")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=798221583]
+position = Vector2(2, 0.5)
+shape = SubResource("RectangleShape2D_ft8w5")
